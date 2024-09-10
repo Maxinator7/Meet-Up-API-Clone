@@ -1,14 +1,22 @@
 require("dotenv").config();
-const redis = require("redis");
+const { Redis } = require("@upstash/redis");
 
-const redisClient = redis.createClient({
+// Create a Redis client using the Upstash credentials
+const redisClient = new Redis({
   url: process.env.REDIS_URL,
+  token: process.env.REDIS_TOKEN,
 });
 
-redisClient.on("error", (err) => {
-  console.error("Error connecting to Redis", err);
-});
+async function connectRedis() {
+  try {
+    // Check if Redis is connected by performing a simple operation
+    await redisClient.set("test-key", "test-value");
+    console.log("Connected to Upstash Redis and performed a test operation.");
+  } catch (err) {
+    console.error("Error connecting to Upstash Redis", err);
+  }
+}
 
-redisClient.connect();
+connectRedis();
 
 module.exports = redisClient;

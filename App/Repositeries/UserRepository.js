@@ -38,8 +38,7 @@ class UserRepository {
     let users = await redisClient.get("users");
 
     if (users) {
-      // Parse and return cached data if exists
-      return JSON.parse(users);
+      return users;
     }
 
     users = await User.find();

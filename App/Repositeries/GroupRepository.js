@@ -33,8 +33,7 @@ class GroupRepository {
     let groups = await redisClient.get("groups");
 
     if (groups) {
-      // Parse and return cached data if exists
-      return JSON.parse(groups);
+      return groups;
     }
 
     groups = await Group.find();

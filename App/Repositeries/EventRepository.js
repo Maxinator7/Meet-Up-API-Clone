@@ -34,8 +34,7 @@ class EventRepository {
     let events = await redisClient.get("events");
 
     if (events) {
-      // Parse and return cached data if exists
-      return JSON.parse(events);
+      return events;
     }
 
     events = await Event.find();
