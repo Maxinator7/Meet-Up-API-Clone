@@ -2,17 +2,16 @@ const express = require("express");
 const app = express();
 const connectDB = require("./connection");
 const user = require("./Routes/User");
+const publicRoutes = require("./Routes/publicRoutes");
 const authMiddleware = require("./Middlewares/auth");
+const roleAuth = require("./Middlewares/roleAuth");
 require("dotenv").config();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-app.use("/meetup/api/", user);
 
-// Protected Route Example
-app.get("/api/protected", authMiddleware, (req, res) => {
-  res.json({ message: "This is a protected route", user: req.user });
-});
+app.use("/meetup/api/", publicRoutes); // public routes
+app.use("/meetup/api/", authMiddleware, roleAuth("admin"), user);
 
 const startServer = () => {
   const port = process.env.PORT || 3000;

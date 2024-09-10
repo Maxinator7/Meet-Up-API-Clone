@@ -2,15 +2,9 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../Controllers/UserController");
 const EventController = require("../Controllers/EventController");
-const GroupsController = require("../Controllers/GroupsController");
+const GroupsController = require("../Controllers/GroupController");
 
-router.get("/", (req, res) => {
-  res.json({ status: true });
-});
-
-router.post("/user", userController.createUser);
 router.put("/user/:id", userController.updateUser);
-router.post("/user/login", userController.loginUser);
 router.post("/user/logout", userController.logoutUser);
 router.get("/user/:id", userController.getUserDetails);
 

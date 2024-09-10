@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const createUserSchema = Joi.object({
+const userRequestSchema = Joi.object({
   name: Joi.string()
     .trim()
     .min(3)
@@ -20,10 +20,21 @@ const createUserSchema = Joi.object({
     "string.empty": "Email is required",
     "any.required": "Email is required",
   }),
-  password: Joi.string().required().messages({
-    "string.empty": "Password is required.",
-    "any.required": "Password is required.",
-  }),
+  password: Joi.string()
+    .min(8)
+    .max(128)
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    )
+    .required()
+    .messages({
+      "string.min": "Password must be at least 8 characters long.",
+      "string.max": "Password must not exceed 128 characters.",
+      "string.pattern.base":
+        "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.",
+      "string.empty": "Password is required.",
+      "any.required": "Password is required.",
+    }),
   location: Joi.string()
     .min(6)
     .max(100)
@@ -38,10 +49,15 @@ const createUserSchema = Joi.object({
       "any.required": "Location is required",
     }),
   role: Joi.string().valid("user", "admin").default("user"),
+  isAdult: Joi.boolean().valid(true).required().messages({
+    "boolean.base": "isAdult must be a boolean value.",
+    "any.only": "You must confirm that you are 18 years of age or older.",
+    "any.required": "Confirming your age is required.",
+  }),
 });
 
-const validateCreateUser = (userData) => {
-  return createUserSchema.validate(userData, { abortEarly: false });
+const creatUserRequestValidator = (userData) => {
+  return userRequestSchema.validate(userData, { abortEarly: false });
 };
 
-module.exports = validateCreateUser;
+module.exports = creatUserRequestValidator;

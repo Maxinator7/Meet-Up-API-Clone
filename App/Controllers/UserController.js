@@ -1,13 +1,13 @@
 const userService = require("../Services/UserService");
 const validateRequest = require("../Decoraters/ValidateRequest");
-const userCreateValidator = require("../Validators/UserCreateValidator");
+const validateCreateUserRequest = require("../Validators/RequestValidators/createUserRequestValidator");
 const groupService = require("../Services/GroupService");
 const eventService = require("../Services/EventService");
 class UserController {
-  
-  @validateRequest(userCreateValidator)
+  @validateRequest(validateCreateUserRequest)
   async createUser(req, res) {
     try {
+      delete req.body.isAdult; // deleting age check from requst body
       const user = await userService.createUser(req.body);
       res.status(201).json(user);
     } catch (error) {
@@ -79,7 +79,16 @@ class UserController {
       const event = await eventService.attendEvent(req.body);
       res.status(200).json(event);
     } catch (error) {
-      res.status(400).json({ message: "added Event successfully." });
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async getAllUsers(req, res) {
+    try {
+      const users = await userService.getAllUsers();
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
   }
 }

@@ -1,6 +1,7 @@
 const Group = require("../Models/Group");
 const groupCreateValidator = require("../Validators/GroupCreateValidator");
 const groupUpdateValidator = require("../Validators/GroupUpdateValidator");
+const redisClient = require("../redisClient");
 
 class GroupRepository {
   async createGroup(groupData) {
@@ -26,6 +27,28 @@ class GroupRepository {
 
   async getGroupDetails(groupId) {
     return await Group.findById(groupId);
+  }
+
+  async getAllGroups() {
+    let groups = await redisClient.get("groups");
+
+    if (groups) {
+      // Parse and return cached data if exists
+      return JSON.parse(groups);
+    }
+
+    groups = await Group.find();
+
+    if (!groups) {
+      throw new Error("Groups not found.");
+    }
+
+    // Store the result in Redis and set an expiration time (e.g., 1 hour)
+    await redisClient.set("groups", JSON.stringify(groups), {
+      EX: 3600, // 1 hour in seconds
+    });
+
+    return groups;
   }
 }
 

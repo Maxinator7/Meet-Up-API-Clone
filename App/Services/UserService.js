@@ -32,6 +32,10 @@ class userService {
   async getUserDetails(userId) {
     return await userRepository.findUserById(userId);
   }
+
+  async getAllUsers() {
+    return await userRepository.getAllUsers();
+  }
 }
 
 module.exports = new userService();

@@ -36,6 +36,15 @@ class EventController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  async getAllEvents(req, res) {
+    try {
+      const events = await eventService.getAllEvents();
+      res.status(200).json(events);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new EventController();

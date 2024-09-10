@@ -11,17 +11,16 @@ class EventService {
   }
 
   async updateEvent(eventId, eventData) {
-    await this.checkEvent();
+    await this.checkEvent(eventId);
     return await eventRepository.updateEvent(eventId, eventData);
   }
 
   async deleteEvent(eventId) {
-    await this.checkEvent();
+    await this.checkEvent(eventId);
     return await eventRepository.deleteEvent(eventId);
   }
   async getEventDetails(eventId) {
-    await this.checkEvent();
-    return await eventRepository.getEventDetails(eventId);
+    return await this.checkEvent(eventId);
   }
 
   async attendEvent() {
@@ -35,13 +34,22 @@ class EventService {
     return { message: "Added member" };
   }
 
-  async checkEvent(id) {
-    const event = await eventRepository.getEventDetails(id);
+  async checkEvent(eventId) {
+    const event = await eventRepository.getEventDetails(eventId);
 
     if (!event) {
       throw new Error("Event do not exist.");
     }
     return event;
+  }
+
+  async getAllEvents() {
+    const events = await eventRepository.getAllEvents();
+
+    if (!events) {
+      throw new Error("Events not found.");
+    }
+    return events;
   }
 
   async validateUsers(eventData) {

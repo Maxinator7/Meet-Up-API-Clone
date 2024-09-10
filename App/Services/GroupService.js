@@ -49,12 +49,21 @@ class GroupService {
   }
 
   async checkGroup(id) {
-    const event = await groupRepository.getGroupDetails(id);
+    const group = await groupRepository.getGroupDetails(id);
 
-    if (!event) {
+    if (!group) {
       throw new Error("Group do not exist.");
     }
-    return event;
+    return group;
+  }
+
+  async getAllGroups() {
+    const groups = await groupRepository.getAllGroups();
+
+    if (!groups) {
+      throw new Error("Groups not found.");
+    }
+    return groups;
   }
 
   async validateUsers(groupData) {

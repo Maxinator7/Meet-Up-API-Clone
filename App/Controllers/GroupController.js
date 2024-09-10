@@ -38,6 +38,15 @@ class GroupController {
       res.status(404).json({ error: error.message });
     }
   }
+
+  async getAllGroups(req, res) {
+    try {
+      const groups = await groupService.getAllGroups();
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new GroupController();
